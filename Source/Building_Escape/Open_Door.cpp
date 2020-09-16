@@ -64,10 +64,6 @@ void UOpen_Door::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UOpen_Door::OpenDoor(float DeltaTime)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwner()->GetActorRotation().ToString());
-	//UE_LOG(LogTemp, Warning, TEXT("%f"),  GetOwner()->GetActorRotation().Yaw);
-
-
 	CurrentYaw = FMath::Lerp(CurrentYaw, OpenAngle, DeltaTime*DoorOpenSpeed);
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
@@ -95,7 +91,6 @@ float UOpen_Door::TotalMassO() const
 	for (AActor* Actor : OverlappingActors)
 	{
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-		//UE_LOG(LogTemp, Warning, TEXT("%s is on the pressureplate!"), *Actor->GetName());
 	}
 
 	return TotalMass;
