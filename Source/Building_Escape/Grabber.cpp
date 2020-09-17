@@ -62,8 +62,6 @@ FVector UGrabber::LTE() const
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(PlayeViewPointLocation, PlayerViewPointRotation);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Location =%s , Rotation =%s"),*PlayeViewPointLocation.ToString(),*PlayerViewPointRotation.ToString());
-	// ...
 	return  PlayeViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 }
 
