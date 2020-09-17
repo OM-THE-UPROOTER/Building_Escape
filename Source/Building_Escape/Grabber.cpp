@@ -32,11 +32,7 @@ void UGrabber::BeginPlay()
 void UGrabber::FindPhysicsHandel()
 {
 	PhysicsHandel = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandel)
-	{
-
-	}
-	else
+	if (!PhysicsHandel)
 	{
 		UE_LOG(LogTemp,Error,TEXT("No Component Found in %s"),*(GetOwner()->GetName()));
 	}
@@ -67,14 +63,13 @@ FVector UGrabber::LTE() const
 
 void UGrabber::Grab()
 {
-	UE_LOG(LogTemp,Warning,TEXT("pickup key is Pressed"));
-
-
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
+	AActor* ActorHit = HitResult.GetActor();
 
-	if (HitResult.GetActor())
+	if (ActorHit)
 	{
+		if (!PhysicsHandel){return;}
 		PhysicsHandel->GrabComponentAtLocation(  ComponentToGrab,NAME_None,LTE());
 	}
 
@@ -82,9 +77,8 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
-	UE_LOG(LogTemp, Warning, TEXT("pickup key is Released"));
+	if (!PhysicsHandel) { return; }
 	PhysicsHandel->ReleaseComponent();
-
 }
 
 
@@ -94,7 +88,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
+	if (!PhysicsHandel) { return; }
 	if (PhysicsHandel->GrabbedComponent)
 	{
 		PhysicsHandel->SetTargetLocation(LTE());
@@ -113,13 +107,7 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 
 	FCollisionQueryParams TracePrams(FName(TEXT("")),false,GetOwner());
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByObjectType
-	(
-		Hit,
-		PlayeViewPointLocation,
-		LTE(),
-		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
-		TracePrams
+	GetWorld()->LineTraceSingleByObjectType(Hit,PlayeViewPointLocation,LTE(),FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),TracePrams
 	);
 
 	AActor* ActorHit = Hit.GetActor();
