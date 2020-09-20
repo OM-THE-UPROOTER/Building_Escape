@@ -8,6 +8,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values for this component's properties
 UOpen_Door::UOpen_Door()
@@ -34,6 +35,17 @@ void UOpen_Door::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s has the open door component on it,but no pressure plate !!"), *GetOwner()->GetName());
 	}
+	FindPressurePlate();
+	FindAudioComponent();
+}
+
+void UOpen_Door::FindPressurePlate()
+{
+}
+
+void UOpen_Door::FindAudioComponent()
+{
+	DoorSound = GetOwner()->FindComponentByClass<UAudioComponent>();
 }
 
 
@@ -60,6 +72,14 @@ void UOpen_Door::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UOpen_Door::OpenDoor(float DeltaTime)
 {
+	if (!DoorSound) { return; }
+	CLD = false;
+	if (!OPD)
+	{
+		UE_LOG(LogTemp, Error, TEXT("OPD = %d"), OPD);
+		DoorSound->Play();
+		OPD = true;
+	}
 	CurrentYaw = FMath::Lerp(CurrentYaw, OpenAngle, DeltaTime*DoorOpenSpeed);
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
@@ -72,6 +92,14 @@ void UOpen_Door::CloseDoor(float DeltaTime)
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRotation);
+	if (!DoorSound) { return; }
+	OPD = false;
+	if (!CLD)
+	{
+		UE_LOG(LogTemp, Error, TEXT("CLD = %d"), CLD);
+		DoorSound->Play();
+		CLD = true;
+	}
 }
 
 float UOpen_Door::TotalMassO() const

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Components/AudioComponent.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
@@ -27,13 +28,15 @@ public:
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 	float TotalMassO() const;
+	void FindPressurePlate();
+	void FindAudioComponent();
+	float InitialYaw;
+	float CurrentYaw;
 
 private:
 	UPROPERTY(EditAnywhere)
 	float OpenAngle = 90.f;
 
-	float InitialYaw;
-	float CurrentYaw;
 
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate = nullptr;
@@ -51,4 +54,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		float MassToOpen = 60.f;
+
+	UAudioComponent* DoorSound = nullptr;
+	bool OPD = false;
+	bool CLD = true;
 };
